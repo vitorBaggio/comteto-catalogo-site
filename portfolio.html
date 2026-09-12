@@ -4,7 +4,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="COMBOX Modular">
   <meta property="og:locale" content="pt_BR">
-  <meta property="og:url" content="https://vitorbaggio.github.io/combox-catalogo-site/portfolio.html">
+  <meta property="og:url" content="https://vitorbaggio.github.io/comteto-catalogo-site/portfolio.html">
   <meta property="og:title" content="Portfólio · COMBOX">
   <meta property="og:description" content="Implantacoes da COMBOX, cada uma declarando se e estudo de projeto ou obra entregue. Justaposicao, sapatas isoladas e patio de conformidade.">
   <meta name="twitter:card" content="summary">
@@ -1131,7 +1131,13 @@ footer{padding:clamp(44px,5vw,72px) 0 clamp(56px,6vw,88px);border-top:1px solid 
   function load(img){
     var k = img.getAttribute("data-img");
     if (!k || img.getAttribute("src")) return;
-    if (MAP[k]) img.setAttribute("src", MAP[k]);
+    if (!MAP[k]) return;
+        /* o loading=lazy do navegador segura a decodificacao quando o
+           src chega por script: como os bytes ja estao embutidos na
+           pagina, o atributo nao poupa rede e so deixa a figura em
+           branco. Sai antes de atribuir. */
+        img.removeAttribute("loading");
+        img.setAttribute("src", MAP[k]);
   }
   function carregarTodas(escopo){
     Array.prototype.forEach.call((escopo || document).querySelectorAll("img[data-img]"), load);
@@ -1163,6 +1169,7 @@ footer{padding:clamp(44px,5vw,72px) 0 clamp(56px,6vw,88px);border-top:1px solid 
     setTimeout(function(){
       if (!document.querySelector("img[data-img][src]")) carregarPrimeiras(painelVisivel(), 6);
     }, 1200);
+    setTimeout(function(){ carregarTodas(document); }, 1600);
     window.addEventListener("resize", function(){
       if (!document.querySelector("img[data-img][src]")) carregarPrimeiras(painelVisivel(), 6);
     });
